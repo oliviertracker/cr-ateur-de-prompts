@@ -1,0 +1,93 @@
+<section class="card" aria-labelledby="form-title">
+  <h2 id="form-title" style="margin:0 0 8px 0;font-size:1rem">Créer un prompt</h2>
+
+  <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+    <label for="preset">Modèles d'exemples :</label>
+    <select id="preset" class="small" aria-label="Choisir modèle">
+      <option value="">-- Aucun --</option>
+      <option value="marketing">Marketing — Fiche produit</option>
+      <option value="technique">Technique — Documentation API</option>
+      <option value="rh">RH — Offre d'emploi</option>
+    </select>
+    <div class="muted" style="margin-left:auto;font-size:0.85rem">Placeholders : {{nom}}, {{produit}}, {{fonction}}, custom</div>
+  </div>
+
+  <form id="promptForm" onsubmit="return false;">
+    <div><label for="role">Role</label><input id="role" type="text" value="Modèle de prompt professionnel (à adapter)" required></div>
+    <div><label for="objectif">Objectif : (résultat attendu)</label><input id="objectif" type="text" placeholder="Ex : Générer une fiche produit efficace" required></div>
+    <div><label for="tache">Tâche : (action demandée)</label><textarea id="tache" placeholder="Ex : Rédiger un texte de 150-200 mots, structuré en 3 paragraphes" required></textarea></div>
+    <div><label for="format">Format : (structure souhaitée)</label><input id="format" type="text" placeholder="Ex : Titre, 3 paragraphes, bullet points, CTA" required></div>
+    <div><label for="contraintes">Contraintes : (ton, longueur, spécificités)</label><textarea id="contraintes" placeholder="Ex : Ton professionnel, 150-200 mots, inclure mot-clé 'durable'"></textarea></div>
+
+    <div>
+      <label for="variables">Variables / Placeholders (JSON ou key=value par ligne)</label>
+      <textarea id="variables" placeholder='Ex JSON: {"produit":"BrosseX","nom":"Alice"} \nOu:\nproduit=BrosseX\nnom=Alice'></textarea>
+      <div class="small" style="margin-top:6px">Utilisé pour la prévisualisation et export (remplace {{clé}}).</div>
+    </div>
+
+    <div class="row">
+      <button id="generate" class="btn" type="button">Générer</button>
+      <button id="variantsBtn" class="btn secondary" type="button" title="Générer variantes (styles multiples)">Variantes stylistiques</button>
+      <button id="clear" class="btn ghost" type="button">Réinitialiser</button>
+      <button id="save" class="btn" type="button">Sauvegarder</button>
+    </div>
+
+    <div class="variants-area">
+      <label for="nVariants" style="margin-right:6px">Générer N variantes :</label>
+      <input id="nVariants" type="number" min="1" max="20" value="4" style="width:80px">
+      <button id="genN" class="btn secondary" type="button">Générer N</button>
+      <label style="margin-left:8px">Styles : </label>
+      <select id="styleSelect" style="width:160px">
+        <option value="mixed">Mix (formel, convivial, concis, détaillé, enthousiaste)</option>
+        <option value="formal">Formel</option>
+        <option value="friendly">Convivial</option>
+        <option value="concise">Concis</option>
+        <option value="detailed">Détaillé</option>
+        <option value="enthusiastic">Enthousiaste</option>
+      </select>
+      <div class="small" style="margin-left:auto">Variants can be previewed and saved individually</div>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+      <label for="placeholders">Insérer placeholder :</label>
+      <select id="placeholders" class="small">
+        <option value="">-- choisir --</option>
+        <option value="{{nom}}">{{nom}}</option>
+        <option value="{{produit}}">{{produit}}</option>
+        <option value="{{fonction}}">{{fonction}}</option>
+      </select>
+      <button id="insertToTache" type="button" class="btn secondary">Insérer dans Tâche</button>
+      <button id="insertToContraintes" type="button" class="btn secondary">Insérer dans Contraintes</button>
+    </div>
+  </form>
+</section>
+
+<aside class="card" aria-labelledby="output-title">
+  <h2 id="output-title" style="margin:0 0 8px 0;font-size:1rem">Prompt généré / Prévisualisation</h2>
+  <pre id="output" aria-live="polite" role="region">Utilise le formulaire puis clique "Générer".</pre>
+
+  <div style="margin-top:10px;display:flex;gap:8px;align-items:center;justify-content:space-between">
+    <div class="tools">
+      <button id="copyBtn" class="btn secondary" type="button">Copier</button>
+      <button id="exportTxt" class="btn" type="button">Exporter .txt</button>
+      <button id="exportJson" class="btn secondary" type="button">Exporter JSON</button>
+      <button id="exportCsv" class="btn secondary" type="button">Exporter CSV</button>
+      <button id="previewReplace" class="btn ghost" type="button" title="Prévisualisation avec variables">Prévisualiser variables</button>
+    </div>
+    <div class="small">Longueur : <span id="length">0</span> caractères</div>
+  </div>
+
+  <hr style="margin:12px 0;border:none;border-top:1px solid #eef2f7">
+
+  <h3 style="margin:0 0 8px 0;font-size:0.95rem">Prompts sauvegardés</h3>
+  <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center">
+    <button id="exportAllJson" class="btn ghost">Exporter tout JSON</button>
+    <button id="exportAllCsv" class="btn ghost">Exporter tout CSV</button>
+    <button id="clearAll" class="btn danger">Supprimer tout</button>
+  </div>
+  <div class="save-list" id="savedList" aria-live="polite"></div>
+</aside>
+
+<footer>
+  Astuce : remplis "Variables" pour remplacer automatiquement {{clé}} — utile pour prévisualiser avant envoi au modèle. Les variantes N génèrent différentes formulations locales sans API.
+</footer>
